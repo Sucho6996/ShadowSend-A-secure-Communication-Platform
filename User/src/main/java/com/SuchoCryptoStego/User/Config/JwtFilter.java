@@ -1,4 +1,4 @@
-package com.SuchoCryptoStego.User.securityConfig;
+package com.SuchoCryptoStego.User.Config;
 
 
 

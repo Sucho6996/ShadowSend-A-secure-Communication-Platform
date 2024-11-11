@@ -7,6 +7,9 @@ import com.SuchoCryptoStego.User.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +29,8 @@ public class UserController {
     AuthenticationManager authenticationManager;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     /*
     This Commented area is for anyone who
@@ -90,6 +95,19 @@ public class UserController {
         }
         else
             return new ResponseEntity<>("Invalid credentials!!!", HttpStatus.UNAUTHORIZED);
+    }
+
+    @MessageMapping("/encrypt")
+    public void encryptMessage(@Payload EncryptRequest encryptRequest) {
+        String token = encryptRequest.getToken();
+        Message message = encryptRequest.getMessage();
+        MultipartFile imgFile = encryptRequest.getImageFile();
+
+        messagingTemplate.convertAndSendToUser(
+                message.getRph(),           // Destination user identified by their phone number
+                "/queue/encryptedMessage", // The destination within the user-specific queue
+                userService.encryption(token, message, imgFile).getBody() // The message payload to send
+        );
     }
 
 }
