@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -35,6 +34,7 @@ public class EncryptionService {
         message1.setMessage(chipperText);
         message1.setReceiverNumber(message.getRph());
         message1.setSenderNumber(sph);
+        message1.setSenderName(message.getSenderName());
         message1.setImageName(message.getImageName());
         message1.setImageType(message.getImageType());
         message1.setImage(stegoImage);

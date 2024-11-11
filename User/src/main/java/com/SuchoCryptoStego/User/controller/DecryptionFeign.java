@@ -19,6 +19,9 @@ public interface DecryptionFeign {
     @GetMapping("/dec/get/{id}")
     public ResponseEntity<UserView> getMessage(@PathVariable int id);
 
+    @GetMapping("/dec/search/{keyword}")
+    public ResponseEntity<List<UserView>> search(@PathVariable String keyword);
+
     @PostMapping("/dec/decrypt")
     public ResponseEntity<String> decryption
             (@RequestParam int id, @RequestBody DMessageBody messageBody);

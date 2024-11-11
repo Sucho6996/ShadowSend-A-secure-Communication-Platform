@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class MessageBody {
-    String rph;
-    String message;
-    String key;
+    private String rph;
+    private String message;
+    private String senderName;
+    private String key;
     //For Image
     private String imageName;
     private String imageType;

@@ -41,6 +41,7 @@ public class DecryptService {
                 UserView userView=new UserView();
                 userView.setMessageId(m.getMessageId());
                 userView.setSenderNumber(m.getSenderNumber());
+                userView.setSenderName(m.getSenderName());
                 userView.setImage(m.getImage());
                 userViews.add(userView);
             }
@@ -55,7 +56,26 @@ public class DecryptService {
         UserView userView=new UserView();
         userView.setMessageId(message.getMessageId());
         userView.setSenderNumber(message.getSenderNumber());
+        userView.setSenderName(message.getSenderName());
         userView.setImage(message.getImage());
         return new ResponseEntity<>(userView,HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<UserView>> search(String keyword) {
+
+        List<Message> message=repo.findByKeyword(keyword);
+        List<UserView> userViews=new ArrayList<>();
+        if(message.isEmpty()){
+            return new ResponseEntity<>(userViews,HttpStatus.NO_CONTENT);
+        }
+        for (Message m:message){
+            UserView userView=new UserView();
+            userView.setMessageId(m.getMessageId());
+            userView.setSenderNumber(m.getSenderNumber());
+            userView.setSenderName(m.getSenderName());
+            userView.setImage(m.getImage());
+            userViews.add(userView);
+        }
+        return new ResponseEntity<>(userViews,HttpStatus.OK);
     }
 }

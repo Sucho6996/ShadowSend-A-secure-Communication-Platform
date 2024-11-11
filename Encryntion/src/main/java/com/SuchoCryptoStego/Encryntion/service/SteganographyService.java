@@ -19,7 +19,7 @@ public class SteganographyService {
     }
 
     private String convertMessageToBinary(String message) {
-        String delimiter = "00000000"; // 8-bit delimiter marking the end of the message
+        String delimiter = "########"; // 8-bit delimiter marking the end of the message
         String messageWithDelimiter=message+delimiter;
         StringBuilder binaryMessage = new StringBuilder();
         for (char c : messageWithDelimiter.toCharArray()) {

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class UserView{
     private int messageId;
     private String senderNumber;
+    private String senderName;
     @Lob
     private byte[] image;
 }

@@ -17,7 +17,7 @@ public class SteganographyService {
     private String extractBinaryMessageWithBitFunction(BufferedImage image) {
         StringBuilder binaryMessage = new StringBuilder();
         int bitPosition = 0; // Cycle through bit positions (0, 1, 2) in the blue component
-        String delimiter = "00000000"; // 8-bit delimiter marking the end of the message
+        String delimiter = "########"; // 8-bit delimiter marking the end of the message
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {

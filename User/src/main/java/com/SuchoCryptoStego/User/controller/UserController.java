@@ -49,6 +49,12 @@ public class UserController {
         return userService.get(id);
     }
 
+    //search for messages using phone number or sender name
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<UserView>> search(@PathVariable String keyword){
+        return userService.search(keyword);
+    }
+
     //Call this api when the user click on decrypt
     //This will decrypt the message and delete the whole record from database
     //Deletion is for provide more data security
@@ -85,6 +91,5 @@ public class UserController {
         else
             return new ResponseEntity<>("Invalid credentials!!!", HttpStatus.UNAUTHORIZED);
     }
-
 
 }

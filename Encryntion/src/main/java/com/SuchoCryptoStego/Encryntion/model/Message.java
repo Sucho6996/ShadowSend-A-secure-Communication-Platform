@@ -14,6 +14,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int messageId;
     private String senderNumber;
+    private String senderName;
     private String receiverNumber;
     private String message;
     //For Image

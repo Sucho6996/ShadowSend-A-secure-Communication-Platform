@@ -53,9 +53,10 @@ public class UserService {
     public ResponseEntity<String> encryption(String token, Message m,MultipartFile imgFile) {
 
         String sph= jwtService.extractUserName(token);
-
+        Users user=userRepo.findByphNo(sph);
         MessageBody message=new MessageBody();
         message.setMessage(m.getMessage());
+        message.setSenderName(user.getName());
         String key=getKey(sph,m.getRph());
         message.setKey(key);
         message.setRph(m.getRph());
@@ -99,5 +100,10 @@ public class UserService {
             return "Sender Or Receiver Not Found";
         }
 
+    }
+
+
+    public ResponseEntity<List<UserView>> search(String keyword) {
+        return new ResponseEntity<>(decryptionFeign.search(keyword).getBody(),HttpStatus.OK);
     }
 }

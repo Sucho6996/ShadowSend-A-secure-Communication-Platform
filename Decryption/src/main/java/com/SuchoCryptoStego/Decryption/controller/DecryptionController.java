@@ -26,6 +26,11 @@ public class DecryptionController {
         return service.get(id);
     }
 
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<UserView>> search(@PathVariable String keyword){
+        return service.search(keyword);
+    }
+
     @PostMapping("/decrypt")
     public ResponseEntity<String> decryption
             (@RequestParam int id, @RequestBody DMessageBody messageBody){

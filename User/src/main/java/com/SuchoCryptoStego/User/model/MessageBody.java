@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class MessageBody {
     private String rph;
     private String message;
+    private String senderName;
     private String key;
     //For Image
     private String imageName;
