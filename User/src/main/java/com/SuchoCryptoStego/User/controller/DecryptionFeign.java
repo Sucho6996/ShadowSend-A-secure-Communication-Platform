@@ -15,6 +15,8 @@ public interface DecryptionFeign {
 
     @GetMapping("/dec/findAll/{rph}")
     public ResponseEntity<List<UserView>> findAll(@PathVariable String rph);
+    @GetMapping("/dec/findFirstSix/{rph}")
+    public ResponseEntity<List<UserView>> findFirstSix(@PathVariable String rph);
 
     @GetMapping("/dec/get/{id}")
     public ResponseEntity<UserView> getMessage(@PathVariable int id);

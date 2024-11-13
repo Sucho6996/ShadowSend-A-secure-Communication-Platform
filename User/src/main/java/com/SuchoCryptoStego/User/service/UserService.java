@@ -33,13 +33,32 @@ public class UserService {
     private BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
     public ResponseEntity<List<UserView>> findAll(String token) {
         String rph= jwtService.extractUserName(token);
-       return new ResponseEntity<>(decryptionFeign.findAll(rph).getBody(),HttpStatus.OK);
+        List<UserView> userViews=decryptionFeign.findAll(rph).getBody();
+        if(!userViews.isEmpty())
+            return new ResponseEntity<>(userViews,HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+    public ResponseEntity<List<UserView>> findFirstSix(String token) {
+
+            String rph= jwtService.extractUserName(token);
+            List<UserView> userViews=decryptionFeign.findFirstSix(rph).getBody();
+            if(!userViews.isEmpty())
+                return new ResponseEntity<>(userViews,HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
     public ResponseEntity<UserView> get(int id) {
         UserView userView=decryptionFeign.getMessage(id).getBody();
-        userView.setSenderNumber(null);
-        return  new ResponseEntity<>(userView,HttpStatus.OK);
+        if(userView!=null){
+            userView.setSenderNumber(null);
+            return  new ResponseEntity<>(userView,HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     public ResponseEntity<String> decryption(int id,String token) {
@@ -48,11 +67,16 @@ public class UserService {
         UserView userView=decryptionFeign.getMessage(id).getBody();
         String sph=userView.getSenderNumber();
         String key=getKey(sph,rph);
+        if(key.equals("###")){
+            return new ResponseEntity<>("Sender Not Found",HttpStatus.BAD_REQUEST);
+        }
         messageBody.setKey(key);
         messageBody.setRph(rph);
-
-
-        return new ResponseEntity<>(decryptionFeign.decryption(id,messageBody).getBody(),HttpStatus.OK);
+        String message=decryptionFeign.decryption(id,messageBody).getBody();
+        if(!message.isEmpty())
+            return new ResponseEntity<>(message,HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Something went wrong",HttpStatus.OK);
     }
 
     public ResponseEntity<String> encryption(String token, Message message,MultipartFile imgFile) {
@@ -63,6 +87,9 @@ public class UserService {
         messageBody.setMessage(message.getMessage());
         messageBody.setSenderName(user.getName());
         String key=getKey(sph,message.getRph());
+        if(key.equals("####")){
+            return new ResponseEntity<>("Receiver Not Found",HttpStatus.BAD_REQUEST);
+        }
         messageBody.setKey(key);
         messageBody.setRph(message.getRph());
         messageBody.setImageName(imgFile.getOriginalFilename());
@@ -112,13 +139,18 @@ public class UserService {
         }
         else {
             System.out.println("Sender Or Receiver Not Found");
-            return "Sender Or Receiver Not Found";
+            return "####";
         }
 
     }
 
-
     public ResponseEntity<List<UserView>> search(String keyword) {
-        return new ResponseEntity<>(decryptionFeign.search(keyword).getBody(),HttpStatus.OK);
+        List<UserView> userViews=decryptionFeign.search(keyword).getBody();
+        if (!userViews.isEmpty())
+            return new ResponseEntity<>(userViews,HttpStatus.OK);
+        else
+            return new ResponseEntity<>(userViews,HttpStatus.NO_CONTENT);
     }
+
+
 }

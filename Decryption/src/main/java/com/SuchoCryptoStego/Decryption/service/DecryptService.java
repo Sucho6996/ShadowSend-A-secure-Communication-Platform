@@ -6,6 +6,7 @@ import com.SuchoCryptoStego.Decryption.model.DMessageBody;
 import com.SuchoCryptoStego.Decryption.model.UserView;
 import com.SuchoCryptoStego.Decryption.repo.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,12 +44,31 @@ public class DecryptService {
                 userView.setMessageId(m.getMessageId());
                 userView.setSenderName("Anonymous");
                 userView.setImage(m.getImage());
+                userView.setTimeStamp(m.getTimestamp());
                 userViews.add(userView);
             }
             return new ResponseEntity<>(userViews, HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(userViews,HttpStatus.NO_CONTENT);
+    }
+
+    public ResponseEntity<List<UserView>> findFirstSix(String rph) {
+        List<Message> allMessage=repo.findSixByReceiverNumber(rph, PageRequest.of(0,6));
+        List<UserView> userViews=new ArrayList<>();
+        if(!allMessage.isEmpty()){
+            for (Message m:allMessage){
+                UserView userView=new UserView();
+                userView.setMessageId(m.getMessageId());
+                userView.setSenderName("Anonymous");
+                userView.setImage(m.getImage());
+                userView.setTimeStamp(m.getTimestamp());
+                userViews.add(userView);
+            }
+            return new ResponseEntity<>(userViews, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(userViews,HttpStatus.NO_CONTENT);
     }
 
     public ResponseEntity<UserView> get(int id) {
@@ -79,4 +99,6 @@ public class DecryptService {
         }
         return new ResponseEntity<>(userViews,HttpStatus.OK);
     }
+
+
 }

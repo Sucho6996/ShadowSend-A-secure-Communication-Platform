@@ -44,6 +44,12 @@ public class UserController {
         String token=authHeader.substring(7);
         return userService.findAll(token);
     }
+    @GetMapping("/findfirstsix")
+    public ResponseEntity<List<UserView>> findFirstSix
+            (@RequestHeader("Authorization") String authHeader){
+        String token=authHeader.substring(7);
+        return userService.findFirstSix(token);
+    }
 
     //Call this api after user clicking on a particular message
     @GetMapping("/get/{id}")

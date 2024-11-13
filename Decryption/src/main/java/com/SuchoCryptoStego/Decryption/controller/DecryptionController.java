@@ -21,6 +21,11 @@ public class DecryptionController {
         return service.findAll(rph);
     }
 
+    @GetMapping("/findFirstSix/{rph}")
+    public ResponseEntity<List<UserView>> findFirstSix(@PathVariable String rph){
+        return service.findFirstSix(rph);
+    }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<UserView> getMessage(@PathVariable int id){
         return service.get(id);
