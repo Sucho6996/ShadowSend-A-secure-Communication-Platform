@@ -29,8 +29,9 @@ public class DecryptService {
         }
         String cipherText=message.getMessage();
         String plainText= decryptionAlgo.decryption(cipherText,messageBody.getKey());
+        String senderDetails=message.getSenderName()+"(No: "+message.getSenderNumber()+")";
         repo.deleteById(message.getMessageId());
-        return new ResponseEntity<>(plainText, HttpStatus.OK);
+        return new ResponseEntity<>(plainText+"\n"+"- "+senderDetails, HttpStatus.OK);
     }
 
     public ResponseEntity<List<UserView>> findAll(String rph) {
@@ -40,8 +41,7 @@ public class DecryptService {
             for (Message m:allMessage){
                 UserView userView=new UserView();
                 userView.setMessageId(m.getMessageId());
-                userView.setSenderNumber(m.getSenderNumber());
-                userView.setSenderName(m.getSenderName());
+                userView.setSenderName("Anonymous");
                 userView.setImage(m.getImage());
                 userViews.add(userView);
             }
@@ -55,8 +55,9 @@ public class DecryptService {
         Message message=repo.findById(id).get();
         UserView userView=new UserView();
         userView.setMessageId(message.getMessageId());
+        userView.setSenderName("Anonymous");
         userView.setSenderNumber(message.getSenderNumber());
-        userView.setSenderName(message.getSenderName());
+        userView.setTimeStamp(message.getTimestamp());
         userView.setImage(message.getImage());
         return new ResponseEntity<>(userView,HttpStatus.OK);
     }
@@ -71,8 +72,8 @@ public class DecryptService {
         for (Message m:message){
             UserView userView=new UserView();
             userView.setMessageId(m.getMessageId());
-            userView.setSenderNumber(m.getSenderNumber());
             userView.setSenderName(m.getSenderName());
+            userView.setTimeStamp(m.getTimestamp());
             userView.setImage(m.getImage());
             userViews.add(userView);
         }

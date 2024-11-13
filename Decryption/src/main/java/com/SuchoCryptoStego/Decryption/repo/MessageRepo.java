@@ -18,4 +18,5 @@ public interface MessageRepo extends JpaRepository<Message,Integer> {
      "LOWER(m.senderName) LIKE LOWER(CONCAT('%', :keyword, '%'))"
     )
     List<Message> findByKeyword(String keyword);
+
 }

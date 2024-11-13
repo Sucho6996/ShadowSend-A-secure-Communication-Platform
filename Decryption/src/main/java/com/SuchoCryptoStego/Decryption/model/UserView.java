@@ -11,10 +11,11 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class UserView {
+public class UserView{
     private int messageId;
     private String senderNumber;
     private String senderName;
+    private String timeStamp;
     @Lob
     private byte[] image;
 }

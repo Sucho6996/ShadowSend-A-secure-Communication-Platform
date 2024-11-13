@@ -15,6 +15,7 @@ public class MessageBody {
     private String message;
     private String senderName;
     private String key;
+    private String timeStamp;
     //For Image
     private String imageName;
     private String imageType;

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -35,7 +37,9 @@ public class UserService {
     }
 
     public ResponseEntity<UserView> get(int id) {
-        return  new ResponseEntity<>(decryptionFeign.getMessage(id).getBody(),HttpStatus.OK);
+        UserView userView=decryptionFeign.getMessage(id).getBody();
+        userView.setSenderNumber(null);
+        return  new ResponseEntity<>(userView,HttpStatus.OK);
     }
 
     public ResponseEntity<String> decryption(int id,String token) {
@@ -47,33 +51,44 @@ public class UserService {
         messageBody.setKey(key);
         messageBody.setRph(rph);
 
+
         return new ResponseEntity<>(decryptionFeign.decryption(id,messageBody).getBody(),HttpStatus.OK);
     }
 
-    public ResponseEntity<String> encryption(String token, Message m,MultipartFile imgFile) {
+    public ResponseEntity<String> encryption(String token, Message message,MultipartFile imgFile) {
 
         String sph= jwtService.extractUserName(token);
         Users user=userRepo.findByphNo(sph);
-        MessageBody message=new MessageBody();
-        message.setMessage(m.getMessage());
-        message.setSenderName(user.getName());
-        String key=getKey(sph,m.getRph());
-        message.setKey(key);
-        message.setRph(m.getRph());
-        message.setImageName(imgFile.getOriginalFilename());
-        message.setImageType(imgFile.getContentType());
+        MessageBody messageBody=new MessageBody();
+        messageBody.setMessage(message.getMessage());
+        messageBody.setSenderName(user.getName());
+        String key=getKey(sph,message.getRph());
+        messageBody.setKey(key);
+        messageBody.setRph(message.getRph());
+        messageBody.setImageName(imgFile.getOriginalFilename());
+        messageBody.setImageType(imgFile.getContentType());
+        messageBody.setTimeStamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         try{
-            message.setImage(imgFile.getBytes());
+            messageBody.setImage(imgFile.getBytes());
         } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(encryptionFeign.encrypt(sph,message).getBody(),HttpStatus.CREATED);
+        return new ResponseEntity<>(encryptionFeign.encrypt(sph,messageBody).getBody(),HttpStatus.CREATED);
     }
 
     public ResponseEntity<String> addUser(Users user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        userRepo.save(user);
-        return new ResponseEntity<>("Account Created",HttpStatus.CREATED);
+        try {
+            user.setPassword(encoder.encode(user.getPassword()));
+            if(!userRepo.existsById(user.getPhNo())){
+                userRepo.save(user);
+                return new ResponseEntity<>("Account Created",HttpStatus.CREATED);
+            }
+            else
+                return new ResponseEntity<>("Phone number been already registered!!!",HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage().toString(),HttpStatus.OK);
+        }
     }
 
     public String getKey(String sph,String rph) {

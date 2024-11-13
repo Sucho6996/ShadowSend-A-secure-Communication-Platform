@@ -16,6 +16,7 @@ public class Message {
     private String senderName;
     private String receiverNumber;
     private String message;
+    private String timestamp;
     //For Image
     private String imageName;
     private String imageType;

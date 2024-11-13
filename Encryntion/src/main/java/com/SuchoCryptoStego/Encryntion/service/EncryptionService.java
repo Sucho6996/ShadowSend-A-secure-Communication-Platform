@@ -35,6 +35,7 @@ public class EncryptionService {
         message1.setReceiverNumber(message.getRph());
         message1.setSenderNumber(sph);
         message1.setSenderName(message.getSenderName());
+        message1.setTimestamp(message.getTimeStamp());
         message1.setImageName(message.getImageName());
         message1.setImageType(message.getImageType());
         message1.setImage(stegoImage);

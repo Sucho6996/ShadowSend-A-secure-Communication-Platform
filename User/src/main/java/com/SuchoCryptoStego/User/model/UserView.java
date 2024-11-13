@@ -16,6 +16,7 @@ public class UserView{
     private int messageId;
     private String senderNumber;
     private String senderName;
+    private String timeStamp;
     @Lob
     private byte[] image;
 }
