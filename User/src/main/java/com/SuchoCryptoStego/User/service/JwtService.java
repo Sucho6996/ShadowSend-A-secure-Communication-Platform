@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +14,8 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 
@@ -25,6 +24,7 @@ public class JwtService {
 
     private static final String SECRET = "TmV3U2VjcmV0S2V5Rm9ySldUU2lnbmluZ1B1cnBvc2VzMTIzNDU2Nzg";
 
+    private final Set<String> invalidatedTokens = ConcurrentHashMap.newKeySet();
     private String secretKey;
 
     public JwtService(){
@@ -81,7 +81,7 @@ public class JwtService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token) && isTokenValid(token));
     }
 
     private boolean isTokenExpired(String token) {
@@ -91,4 +91,21 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+    public boolean invalidateToken(String token) {
+        if (isTokenValid(token)) {
+            invalidatedTokens.add(token);
+            return true;
+        }
+        return false;
+    }
+    public boolean isTokenValid(String token) {
+        return !invalidatedTokens.contains(token) && !isTokenExpired(token);
+    }
+
+    @Scheduled(fixedRate = 1800000) // Runs every 30 min
+    public void cleanupExpiredTokens() {
+        invalidatedTokens.removeIf(this::isTokenExpired);
+    }
+
 }

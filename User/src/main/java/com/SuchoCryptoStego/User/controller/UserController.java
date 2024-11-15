@@ -99,6 +99,17 @@ public class UserController {
         else
             return new ResponseEntity<>("Invalid credentials!!!", HttpStatus.UNAUTHORIZED);
     }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        if (jwtService.invalidateToken(token)) {
+            return new ResponseEntity<>("Logout successful", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Invalid token or already logged out", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
     /*
     This is for later update whenever

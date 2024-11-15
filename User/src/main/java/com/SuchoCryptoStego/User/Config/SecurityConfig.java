@@ -41,14 +41,12 @@ public class SecurityConfig {
         return
                 http.csrf(customizer->customizer.disable())
                         .authorizeHttpRequests(request->request
-                                .requestMatchers("user/signup","user/login","user/getkey")
+                                .requestMatchers("user/signup","user/login","user/logout","user/getkey")
                                 .permitAll()
                                 .anyRequest().authenticated())
                         .httpBasic(Customizer.withDefaults())
                         .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                        //.formLogin(form->form.loginPage("/login").defaultSuccessUrl("/home").permitAll()
-                        //.logout(logout->logout..logoutUrl("/logout").logoutSuccessUrl("/login?logout"))
                         .build();
     }
 
