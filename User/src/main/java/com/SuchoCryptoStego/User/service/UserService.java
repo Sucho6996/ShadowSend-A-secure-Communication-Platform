@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -61,26 +63,32 @@ public class UserService {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public ResponseEntity<String> decryption(int id,String token) {
+    public ResponseEntity<Map<String,String>> decryption(int id,String token) {
+        Map<String,String> response=new HashMap<>();
         String rph=jwtService.extractUserName(token);
         DMessageBody messageBody=new DMessageBody();
         UserView userView=decryptionFeign.getMessage(id).getBody();
         String sph=userView.getSenderNumber();
         String key=getKey(sph,rph);
         if(key.equals("###")){
-            return new ResponseEntity<>("Sender Not Found",HttpStatus.BAD_REQUEST);
+            response.put("message","Sender Not Found");
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
         messageBody.setKey(key);
         messageBody.setRph(rph);
         String message=decryptionFeign.decryption(id,messageBody).getBody();
-        if(!message.isEmpty())
-            return new ResponseEntity<>(message,HttpStatus.OK);
-        else
-            return new ResponseEntity<>("Something went wrong",HttpStatus.OK);
+        if(!message.isEmpty()) {
+            response.put("message",message);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        else {
+            response.put("message","Something went wrong");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
-    public ResponseEntity<String> encryption(String token, Message message,MultipartFile imgFile) {
-
+    public ResponseEntity<Map<String,String>> encryption(String token, Message message,MultipartFile imgFile) {
+        Map<String,String> response=new HashMap<>();
         String sph= jwtService.extractUserName(token);
         Users user=userRepo.findByphNo(sph);
         MessageBody messageBody=new MessageBody();
@@ -88,7 +96,8 @@ public class UserService {
         messageBody.setSenderName(user.getName());
         String key=getKey(sph,message.getRph());
         if(key.equals("####")){
-            return new ResponseEntity<>("Receiver Not Found",HttpStatus.BAD_REQUEST);
+            response.put("message","Receiver Not Found");
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
         messageBody.setKey(key);
         messageBody.setRph(message.getRph());
@@ -98,23 +107,30 @@ public class UserService {
         try{
             messageBody.setImage(imgFile.getBytes());
         } catch (IOException e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+            response.put("message",e.getMessage());
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(encryptionFeign.encrypt(sph,messageBody).getBody(),HttpStatus.CREATED);
+        response.put("message",encryptionFeign.encrypt(sph,messageBody).getBody());
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> addUser(Users user) {
+    public ResponseEntity<Map<String,String>> addUser(Users user) {
+        Map<String,String> response=new HashMap<>();
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             if(!userRepo.existsById(user.getPhNo())){
                 userRepo.save(user);
-                return new ResponseEntity<>("Account Created",HttpStatus.CREATED);
+                response.put("message","Account Created");
+                return new ResponseEntity<>(response,HttpStatus.CREATED);
             }
-            else
-                return new ResponseEntity<>("Phone number been already registered!!!",HttpStatus.BAD_REQUEST);
+            else {
+                response.put("message","Phone number been already registered!!!");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
         }
         catch (Exception e){
-            return new ResponseEntity<>(e.getMessage().toString(),HttpStatus.OK);
+            response.put("message",e.getMessage());
+            return new ResponseEntity<>(response,HttpStatus.OK);
         }
     }
 
