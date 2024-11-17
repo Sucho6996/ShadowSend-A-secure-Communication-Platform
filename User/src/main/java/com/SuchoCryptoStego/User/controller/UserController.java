@@ -42,7 +42,7 @@ public class UserController {
     //Get the list of unread messages
     @GetMapping("/findAll")
     public ResponseEntity<List<UserView>> findAll
-            (@RequestHeader("Authorization") String authHeader){
+    (@RequestHeader("Authorization") String authHeader){
         String token=authHeader.substring(7);
         return userService.findAll(token);
     }
@@ -70,7 +70,7 @@ public class UserController {
     //Deletion is for provide more data security
     @PostMapping("/decrypt")
     public ResponseEntity<Map<String,String>> decryption
-            (@RequestParam("id") int id,@RequestHeader("Authorization") String authHeader){
+    (@RequestParam("id") int id,@RequestHeader("Authorization") String authHeader){
         String token=authHeader.substring(7);
         return userService.decryption(id,token);
     }
@@ -79,7 +79,7 @@ public class UserController {
     // (Create a form for user to provide senders number,message and picture)
     @PostMapping("/encrypt")
     public ResponseEntity<Map<String,String>> encrypt
-            (@RequestHeader("Authorization") String authHeader, @RequestPart("message") Message message, @RequestPart("image") MultipartFile imgFile){
+    (@RequestHeader("Authorization") String authHeader, @RequestPart("message") Message message, @RequestPart("image") MultipartFile imgFile){
         String token=authHeader.substring(7);
         return userService.encryption(token,message,imgFile);
     }

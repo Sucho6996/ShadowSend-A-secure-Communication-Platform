@@ -40,6 +40,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return
                 http.csrf(customizer->customizer.disable())
+                        .cors(Customizer.withDefaults())
                         .authorizeHttpRequests(request->request
                                 .requestMatchers("user/signup","user/login","user/logout","user/getkey")
                                 .permitAll()
