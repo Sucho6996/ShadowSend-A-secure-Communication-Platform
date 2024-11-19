@@ -77,3 +77,6 @@ Love privacy as much as we do? Contribute by adding features, fixing issues, or 
 
 Licensed under the **MIT License** – See `LICENSE` for more.
 
+Information related front end can be get from this link:
+https://github.com/Dev-Tuhin01/ShadowSend-Client.git
+
