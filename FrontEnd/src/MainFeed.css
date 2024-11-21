@@ -1,0 +1,286 @@
+/* Apply styles when .mainfeed-body class is present on the body */
+body.mainfeed-body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(170deg, #007BFF, #0096FF);
+}
+  
+.mainfeed {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
+    min-height: 100vh; 
+    height: 100%; 
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(32, 32, 56, 0.6); 
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+}
+#uimg{
+    max-height: 250px;
+    width: auto;
+}
+
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.app-name {
+    display: flex;
+    font-size: 42px;
+    letter-spacing: 2.5px;
+    width: 80%;
+    justify-content: center;
+    color: white;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#input1 {
+    height: 30px;
+    width: 280px;
+    border-radius: 5px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+#searchlogo {
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px;
+    color: #333;
+    background-color: white;
+}
+
+.new-message-btn {
+    color: #fff;
+    font-size: 50px;
+    border: none;
+    border-radius: 50%;
+    margin-right: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.user-logo img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.massage-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto; 
+    width: 100%;
+    height: 100%; 
+}
+
+.catalog-view {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 25px; 
+    justify-content: flex-start; 
+}
+
+.message-item {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    margin-left: 2%;
+    width: 30%;
+    transition: transform 0.2s ease-in-out; 
+}
+
+.message-item:hover {
+    transform: translateY(-5px); 
+}
+
+.sender {
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+.encrypted-message {
+    color: #555;
+    margin: 10px 0;
+}
+
+
+.decrypt-btn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.decrypt-btn:hover {
+    background-color: #0056b3;
+}
+
+.chat-view {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.chat-window {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.chat-window img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-window p {
+    display: inline-block;
+    margin-top: 5px;
+    color: #333;
+    font-size: 14px;
+}
+
+.back-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #c0392b;
+}
+
+.blurred {
+    filter: blur(5px);
+    pointer-events: none; 
+    transition: filter 0.3s ease;
+  }
+  
+  
+  .form-popup1 {
+    display: block; 
+    position: fixed;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    height: 440px;
+    width: 390px;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px grey;
+    border-radius: 20px;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .form-popup2{
+    display: block; 
+    position: fixed;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    height: auto;
+    width: 390px;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px grey;
+    border-radius: 20px;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  #close {
+    font-size: 26px;
+    cursor: pointer;
+    color: #333;
+    position: absolute;
+    top: 25px;
+    right: 20px;
+  }
+  
+  #close:hover {
+    color: red;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-popup1 input[type="text"],
+  input[type="file"],
+  textarea {
+    margin: 10px 0px;
+    border: none;
+    padding: 15px;
+    padding-left: 13%;
+    font-size: 15px;
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #d8d8d8;
+    border-radius: 5px;
+    width: 85%;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    font-family: play-fair display;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .sadText {
+  color: whitesmoke;
+}
