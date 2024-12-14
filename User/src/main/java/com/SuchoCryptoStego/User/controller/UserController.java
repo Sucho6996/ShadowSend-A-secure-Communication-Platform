@@ -91,7 +91,21 @@ public class UserController {
         return userService.addUser(user);
     }
 
-
+    //For Login
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String,String>> login(@RequestBody Users user){
+//        Map<String,String> response=new HashMap<>();
+//        Authentication auth=authenticationManager
+//                .authenticate(new UsernamePasswordAuthenticationToken(user.getPhNo(),user.getPassword()));
+//        if (auth.isAuthenticated()){
+//            response.put("message",jwtService.generateToken(user.getPhNo()));
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        }
+//        else {
+//            response.put("message","Invalid credentials!!!");
+//            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+//        }
+//    }
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Users user) {
         Map<String, String> response = new HashMap<>();
@@ -131,6 +145,13 @@ public class UserController {
             response.put("message","Invalid token or already logged out");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    //To get their own data
+    @GetMapping("/user")
+    public ResponseEntity<Users> getMyData(@RequestHeader("Authorization") String authHeader){
+        String token=authHeader.substring(7);
+        return userService.getMyData(token);
     }
 
 

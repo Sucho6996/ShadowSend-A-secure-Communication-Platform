@@ -174,4 +174,8 @@ public class UserService {
     }
 
 
+    public ResponseEntity<Users> getMyData(String token) {
+        String phNo= jwtService.extractUserName(token);
+        return new ResponseEntity<>(userRepo.findByphNo(phNo),HttpStatus.FOUND);
+    }
 }
