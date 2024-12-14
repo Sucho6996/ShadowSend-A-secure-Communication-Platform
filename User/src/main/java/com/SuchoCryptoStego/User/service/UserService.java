@@ -46,8 +46,8 @@ public class UserService {
 
             String rph= jwtService.extractUserName(token);
             List<UserView> userViews=decryptionFeign.findFirstSix(rph).getBody();
-            if(!userViews.isEmpty())
-                return new ResponseEntity<>(userViews,HttpStatus.OK);
+            if(userViews!=null)
+                return new ResponseEntity<>(userViews, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
@@ -104,6 +104,11 @@ public class UserService {
         messageBody.setImageName(imgFile.getOriginalFilename());
         messageBody.setImageType(imgFile.getContentType());
         messageBody.setTimeStamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        if(imgFile==null || imgFile.isEmpty()){
+            response.put("message","Please select another image");
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
+
         try{
             messageBody.setImage(imgFile.getBytes());
         } catch (IOException e) {

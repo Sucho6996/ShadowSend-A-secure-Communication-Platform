@@ -42,7 +42,7 @@ public class SecurityConfig {
                 http.csrf(customizer->customizer.disable())
                         .cors(Customizer.withDefaults())
                         .authorizeHttpRequests(request->request
-                                .requestMatchers("user/signup","user/login","user/logout","user/getkey")
+                                .requestMatchers("user/signup","user/login","user/logout")
                                 .permitAll()
                                 .anyRequest().authenticated())
                         .httpBasic(Customizer.withDefaults())

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -90,21 +91,35 @@ public class UserController {
         return userService.addUser(user);
     }
 
-    //For Login
+
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login(@RequestBody Users user){
-        Map<String,String> response=new HashMap<>();
-        Authentication auth=authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getPhNo(),user.getPassword()));
-        if (auth.isAuthenticated()){
-            response.put("message",jwtService.generateToken(user.getPhNo()));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        else {
-            response.put("message","Invalid credentials!!!");
+    public ResponseEntity<Map<String, String>> login(@RequestBody Users user) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Authentication auth = authenticationManager.
+                    authenticate(new UsernamePasswordAuthenticationToken(user.getPhNo(), user.getPassword())
+            );
+
+            // If authentication is successful
+            if (auth.isAuthenticated()) {
+                response.put("message", jwtService.generateToken(user.getPhNo()));
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (BadCredentialsException e) {
+            // Handle invalid credentials
+            response.put("message", "Invalid credentials!!!");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            // Handle other authentication-related exceptions
+            response.put("message", "Authentication failed due to an error.");
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
+
+        // Fallback in case of unexpected behavior
+        response.put("message", "Authentication process failed.");
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
+
     @PostMapping("/logout")
     public ResponseEntity<Map<String,String>> logout(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
