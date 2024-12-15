@@ -1,15 +1,14 @@
-import React, { useState, useEffect, lazy, Suspense, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './App.css';
+import Forms from './Forms';
+import MainFeed from './MainFeed';
 import { useUserContext } from './Context/userContext';
-
-// Lazy load components
-const Forms = lazy(() => import('./Forms'));
-const MainFeed = lazy(() => import('./MainFeed'));
 
 function App() {
   const [currentView, setCurrentView] = useState('Forms');
   const { user } = useUserContext();
 
+  // Memoize current view calculation based on user
   const derivedView = useMemo(() => (user ? 'MainFeed' : 'Forms'), [user]);
 
   useEffect(() => {
@@ -19,10 +18,8 @@ function App() {
 
   return (
     <div className="App">
-      <Suspense fallback={<div>Loading...</div>}>
-        {currentView === 'Forms' && <Forms onViewSwitch={setCurrentView} />}
-        {currentView === 'MainFeed' && <MainFeed setCurrentView={setCurrentView} />}
-      </Suspense>
+      {currentView === 'Forms' && <Forms onViewSwitch={setCurrentView} />}
+      {currentView === 'MainFeed' && <MainFeed setCurrentView={setCurrentView} />}
     </div>
   );
 }

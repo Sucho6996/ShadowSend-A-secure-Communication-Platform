@@ -25,15 +25,11 @@ body.mainfeed-body {
     justify-content: space-between;
     align-items: center;
     background: rgba(32, 32, 56, 0.6); 
-    padding: 10px 20px;
+    padding: 4px 20px;
     position: sticky;
     top: 0;
     z-index: 10;
     width: 100%;
-}
-#uimg{
-    max-height: 250px;
-    width: auto;
 }
 
 
@@ -102,6 +98,10 @@ body.mainfeed-body {
     height: 100%; 
 }
 
+.massage-body img{
+    height: 50%;
+}
+
 .catalog-view {
     display: flex;
     flex-wrap: wrap; 
@@ -117,7 +117,8 @@ body.mainfeed-body {
     display: flex;
     flex-direction: column;
     margin-left: 2%;
-    width: 30%;
+    width: 21%;
+    max-height: auto;
     transition: transform 0.2s ease-in-out; 
 }
 
@@ -206,15 +207,15 @@ body.mainfeed-body {
     display: block; 
     position: fixed;
     top: 55%;
-    left: 50%;
+    left: 53%;
     transform: translate(-50%, -50%);
     z-index: 9999;
-    height: 440px;
-    width: 390px;
+    height: auto;
+    width: 27%;
     background-color: #fff;
     box-shadow: 0px 0px 20px grey;
     border-radius: 20px;
-    padding: 20px;
+    padding: 1.7%;
     overflow-y: auto;
   }
   
@@ -222,15 +223,15 @@ body.mainfeed-body {
     display: block; 
     position: fixed;
     top: 55%;
-    left: 50%;
+    left: 53%;
     transform: translate(-50%, -50%);
     z-index: 9999;
     height: auto;
-    width: 390px;
+    width: 25%;
     background-color: #fff;
     box-shadow: 0px 0px 20px grey;
     border-radius: 20px;
-    padding: 20px;
+    padding: 2%;
     overflow-y: auto;
   }
 
@@ -265,22 +266,110 @@ body.mainfeed-body {
     border-radius: 5px;
     width: 85%;
   }
-  
-  button {
-    background-color: #007bff;
+
+  .form-popup1 button, .form-popup2 button{
+    background-color: #007BFF;
     color: white;
-    padding: 10px 30px;
     border: none;
+    padding: 8px;
     border-radius: 5px;
-    cursor: pointer;
     font-size: 20px;
-    font-family: play-fair display;
-  }
-  
-  button:hover {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-popup1 button:hover, .form-popup2 button:hover {
     background-color: #0056b3;
-  }
+}
   
   .sadText {
   color: whitesmoke;
 }
+
+.user-icon {
+    color: #fff;
+    font-size: 38px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-icon-container {
+    position: relative;
+  }
+  
+  .profile-view-dropdown {
+    position: absolute;
+    top: 50px;
+    text-align: center;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .profile-header {
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .profile-icon {
+    margin-right: 10px;
+    background-color: #555; 
+    color: white; 
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+    margin-left: 37%;
+    margin-bottom: 4%;
+  }
+  
+  .user-profile-icon {
+    font-size: 50px;  
+  }
+  
+  
+  .profile-info h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .profile-info .phno {
+    margin: 5px 0 0;
+    font-size: 16px;
+    color: #777;
+    display: flex;
+  }
+  .profile-info .phno b, .profile-info .phno p{
+    margin: 2px;
+  }
+
+  .logout-div{
+    display: flex;
+    margin-top: 4%;
+  }
+
+  .logout-div p{
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 3%;
+  }
+
+  .logout{
+    margin-top: 3.5%;
+    margin-right: 5%;
+    color: #333;
+    font-size: 20px;
+  }
+  
