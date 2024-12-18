@@ -1,10 +1,12 @@
 package com.SuchoCryptoStego.User.service;
 
 
+import com.SuchoCryptoStego.User.Config.TwilioConfig;
 import com.SuchoCryptoStego.User.controller.DecryptionFeign;
 import com.SuchoCryptoStego.User.controller.EncryptionFeign;
 import com.SuchoCryptoStego.User.model.*;
 import com.SuchoCryptoStego.User.repo.UserRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class UserService {
 
@@ -31,6 +34,11 @@ public class UserService {
     EncryptionFeign encryptionFeign;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    TwilioService twilioService;
+
+
+
 
     private BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
     public ResponseEntity<List<UserView>> findAll(String token) {
@@ -178,4 +186,7 @@ public class UserService {
         String phNo= jwtService.extractUserName(token);
         return new ResponseEntity<>(userRepo.findByphNo(phNo),HttpStatus.FOUND);
     }
+
+
+
 }

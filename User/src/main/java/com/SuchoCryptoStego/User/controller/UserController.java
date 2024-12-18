@@ -3,6 +3,7 @@ package com.SuchoCryptoStego.User.controller;
 
 import com.SuchoCryptoStego.User.model.*;
 import com.SuchoCryptoStego.User.service.JwtService;
+import com.SuchoCryptoStego.User.service.TwilioService;
 import com.SuchoCryptoStego.User.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ public class UserController {
     AuthenticationManager authenticationManager;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    TwilioService twilioService;
 //    @Autowired
 //    private SimpMessagingTemplate messagingTemplate;
 
@@ -87,9 +90,10 @@ public class UserController {
 
     //For signup
     @PostMapping("/signup")
-    public ResponseEntity<Map<String,String>> signIn(@RequestBody Users user){
+    public ResponseEntity<Map<String,String>> signUp(@RequestBody Users user){
         return userService.addUser(user);
     }
+
 
     //For Login
 //    @PostMapping("/login")
@@ -148,12 +152,40 @@ public class UserController {
     }
 
     //To get their own data
-    @GetMapping("/user")
+    @GetMapping("/profile")
     public ResponseEntity<Users> getMyData(@RequestHeader("Authorization") String authHeader){
         String token=authHeader.substring(7);
         return userService.getMyData(token);
     }
 
+    /*For changing the password after login*/
+    @PostMapping("/sendOtpSecure")
+    public ResponseEntity<Map<String,String>> sendOtpSecure(@RequestHeader("Authorization") String authHeader){
+        String token=authHeader.substring(7);
+        String phNo= jwtService.extractUserName(token);
+        return twilioService.sendOtp(phNo);
+    }
+
+    /*Use this for forget password or signup situation*/
+    @PostMapping("/sendOtp")
+    public ResponseEntity<Map<String,String>> sendOtp(@RequestParam("phNo") String phNo){
+        return twilioService.sendOtp(phNo);
+    }
+
+    /*After getting the otp successfully user will verify with phNo and otp using this API*/
+    @PostMapping("/verify")
+    public ResponseEntity<Map<String,String>> verifyOtp(@RequestBody VerifyUser verifyUser){
+        return twilioService.verifyOtp(verifyUser);
+    }
+
+    /*After getting 201 status from user/verify
+    user will provide phNo and password(variable name->otp)
+    and this api will be called
+    */
+    @PutMapping("/resetPassword")
+    public ResponseEntity<Map<String,String>> resetPassword(@RequestBody VerifyUser verifyUser){
+        return twilioService.resetPass(verifyUser);
+    }
 
 
     /*

@@ -42,7 +42,13 @@ public class SecurityConfig {
                 http.csrf(customizer->customizer.disable())
                         .cors(Customizer.withDefaults())
                         .authorizeHttpRequests(request->request
-                                .requestMatchers("user/signup","user/login","user/logout")
+                                .requestMatchers
+                                        ("user/signup",
+                                        "user/login",
+                                        "user/logout",
+                                        "user/sendOtp",
+                                        "user/verify",
+                                        "user/resetPassword")
                                 .permitAll()
                                 .anyRequest().authenticated())
                         .httpBasic(Customizer.withDefaults())

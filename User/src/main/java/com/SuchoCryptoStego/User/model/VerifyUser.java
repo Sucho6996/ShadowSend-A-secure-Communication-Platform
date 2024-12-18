@@ -1,19 +1,15 @@
 package com.SuchoCryptoStego.User.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Users {
-
-    @Id
+public class VerifyUser {
     private String phNo;
-    private String name;
-    private String password;
+    private String otp;
 }
