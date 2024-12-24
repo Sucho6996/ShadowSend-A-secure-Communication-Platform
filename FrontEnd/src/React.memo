@@ -1,0 +1,27 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import './App.css';
+import Forms from './Forms';
+import MainFeed from './MainFeed';
+import { useUserContext } from './Context/userContext';
+
+function App() {
+  const [currentView, setCurrentView] = useState('Forms');
+  const { user } = useUserContext();
+
+  // Memoize current view calculation based on user
+  const derivedView = useMemo(() => (user ? 'MainFeed' : 'Forms'), [user]);
+
+  useEffect(() => {
+    setCurrentView(derivedView);
+    console.log(user);
+  }, [derivedView]);
+
+  return (
+    <div className="App">
+      {currentView === 'Forms' && <Forms onViewSwitch={setCurrentView} />}
+      {currentView === 'MainFeed' && <MainFeed setCurrentView={setCurrentView} />}
+    </div>
+  );
+}
+
+export default React.memo(App);
