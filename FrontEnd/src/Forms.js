@@ -1,165 +1,196 @@
-import React, { useState, useEffect } from 'react';
-import './Forms.css'; // Import the CSS
+import React, { useState, useEffect, useCallback } from 'react';
+import './Css/Forms.css';
 import useLogin from './hooks/useLogin.js';
 import useSignup from './hooks/useSignup.js';
+import ForgotPassword from './hooks/ForgotPassword'; 
 
 const Forms = ({ onViewSwitch }) => {
   const [isSignup, setIsSignup] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false); // To toggle the visibility of the password
-  const [captcha, setCaptcha] = useState(''); // Store CAPTCHA value
-  const [userCaptcha, setUserCaptcha] = useState(''); // Store user's CAPTCHA input
-  const [captchaError, setCaptchaError] = useState(false); // Track CAPTCHA errors
-  const [data,setData] = useState({
-    name:"",
-    phNo:"",
-    password:"",
-  });
-   
-  const {loginLoading,login} = useLogin();
-  const {signupLoading,signup} = useSignup();
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [captcha, setCaptcha] = useState('');
+  const [userCaptcha, setUserCaptcha] = useState('');
+  const [captchaError, setCaptchaError] = useState(false);
+  const [data, setData] = useState({ name: '', phNo: '', password: '' });
+  
 
-  const toggleForm = () => {
-    setIsSignup(!isSignup);
-  };
+  const { loginLoading, login } = useLogin();
+  const { signupLoading, signup } = useSignup();
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(prevState => !prevState); // Toggle the password visibility
-  };
-
-  const handleLogin = () => {
-    if (userCaptcha === captcha) {
-      // After successful signin, switch to MainFeed view
-      //onViewSwitch('MainFeed');
-      login(data.name,data.phNo,data.password);
-    } else {
-      setCaptchaError(true); // Show error if CAPTCHA is incorrect
-      
-      // Set a timeout to clear the error message after 3 seconds
-      setTimeout(() => {
-        setCaptchaError(false);
-      }, 3000);
-    }
-  };
-
-  const handleSignup = () => {
-    // After successful signup, switch to MainFeed view
-    signup(data.name,data.phNo,data.password)
-    toggleForm();
-    //onViewSwitch('MainFeed');
-  };
-
-  // Function to generate random CAPTCHA string
-  const generateCaptcha = () => {
+  // Generate CAPTCHA on-demand
+  const generateCaptcha = useCallback(() => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let captchaString = '';
     for (let i = 0; i < 6; i++) {
-      const randomIndex = Math.floor(Math.random() * chars.length);
-      captchaString += chars[randomIndex];
+      captchaString += chars[Math.floor(Math.random() * chars.length)];
     }
-    setCaptcha(captchaString); // Set the generated CAPTCHA
-  };
+    setCaptcha(captchaString);
+  }, []);
 
   useEffect(() => {
-    generateCaptcha(); // Generate a new CAPTCHA on component mount
+    generateCaptcha();
+  }, [generateCaptcha]);
+
+  const togglePasswordVisibility = useCallback(() => {
+    setPasswordVisible((prevState) => !prevState);
   }, []);
+
+  const toggleForm = useCallback(() => {
+    setIsSignup((prev) => {
+      const newState = !prev;
+      setData({
+        name: '',
+        phNo: '',
+        password: '',
+      });
+      setUserCaptcha('');
+      setCaptchaError(false);
+      generateCaptcha();
+      return newState;
+    });
+  }, [generateCaptcha]);
+
+  // Handle login
+  const handleLogin = useCallback(() => {
+    if (userCaptcha === captcha) {
+      login(data.name, data.phNo, data.password);
+    } else {
+      setCaptchaError(true);
+      setTimeout(() => setCaptchaError(false), 3000); 
+    }
+  }, [captcha, userCaptcha, data, login]);
+
+  // Handle signup
+  const handleSignup = useCallback(() => {
+    signup(data.name, data.phNo, data.password);
+  }, [data, signup]);
+
+  // Memoized input handler
+  const handleInputChange = useCallback(
+    (field) => (e) => {
+      setData((prev) => ({ ...prev, [field]: e.target.value }));
+    },
+    []
+  );
+
+  // Handle Forgot Password click
+  const handleForgotPassword = () => {
+    ForgotPassword(); 
+  };
 
   return (
     <div className={`container ${isSignup ? 'change' : ''}`}>
       <div className="forms-container">
-        {/* Signup Form */}
-        <div className={`form-control signup-form`}>
-          <form action="#">
-            <h2>SIGN UP</h2><br/>
-
-            {/* Name input with icon */}
-            <div className="input-wrapper">
-              <i className="fas fa-user icon"></i>
-              <input type="text" placeholder="Name" value={data.name} onChange={(e)=>{setData({...data,name:e.target.value})}} required />
-            </div>
-
-            {/* Phone number input with icon */}
-            <div className="input-wrapper">
-              <i className="fas fa-phone-alt icon"></i>
-              <input type="number" placeholder="Phone no." value={data.phNo} onChange={(e)=>{setData({...data,phNo:e.target.value})}} required />
-            </div>
-
-            {/* Password input with icon */}
-            <div className="input-wrapper">
-              <i className="fas fa-key icon"></i>
-              <input
-                type={passwordVisible ? 'text' : 'password'}
-                placeholder="Password"
-                id="password"
-                value={data.password} onChange={(e)=>{setData({...data,password:e.target.value})}}
-                required
-              />
-            </div>
-            <i
-                className={`fa ${passwordVisible ? 'fa-eye' : 'fa-eye-slash'} toggle-password`}
-                onClick={togglePasswordVisibility}
-            ></i>
-
-            <button type="button" onClick={handleSignup}>Sign Up</button>
-          </form>
-        </div>
-
-        {/* Signin Form */}
-        <div className="form-control signin-form">
-          <form action="#">
-            <h2>LOGIN</h2><br/>
-            <div className="input-wrapper">
-              <i className="fas fa-user icon"></i>
-              <input type="text" placeholder="Name" value={data.name} onChange={(e)=>{setData({...data,name:e.target.value})}} required />
-            </div>
-
- 
-            {/* Username input with icon */}
-            <div className="input-wrapper">
-              <i className="fas fa-user icon"></i>
-              <input type="text" placeholder="Registered number" value={data.phNo} onChange={(e)=>{setData({...data,phNo:e.target.value})}} required />
-            </div>
-
-            {/* Password input with icon */}
-            <div className="input-wrapper">
-              <i className="fas fa-key icon"></i>
-              <input
-                type={passwordVisible ? 'text' : 'password'}
-                placeholder="Password"
-                id="password"
-                value={data.password}
-                onChange={(e)=>{setData({...data,password:e.target.value})}}
-                required
-              />
-              <i
-                className={`fa ${passwordVisible ? 'fa-eye' : 'fa-eye-slash'} toggle-password`}
-                onClick={togglePasswordVisibility} id="eye"
-            ></i>
-
-
-            </div>
-            {/* CAPTCHA Input */}
-            <div className="captcha-container">
-              <div className="captcha-display">
-                <span>{captcha}</span> {/* Display the CAPTCHA */}
+            {/* Signup Form */}
+            {isSignup && (
+              <div className="form-control signup-form">
+                <form action="#">
+                  <h2>SIGN UP</h2><br /><br />
+                  <div className="input-wrapper">
+                    <i className="fas fa-user icon"></i>
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={data.name}
+                      onChange={handleInputChange('name')}
+                      required
+                    />
+                  </div>
+                  <div className="input-wrapper">
+                    <i className="fas fa-phone-alt icon"></i>
+                    <input
+                      type="number"
+                      placeholder="Phone no."
+                      value={data.phNo}
+                      onChange={handleInputChange('phNo')}
+                      required
+                    />
+                  </div>
+                  <div className="input-wrapper">
+                    <i className="fas fa-key icon"></i>
+                    <input
+                      type={passwordVisible ? 'text' : 'password'}
+                      placeholder="Password"
+                      value={data.password}
+                      onChange={handleInputChange('password')}
+                      required
+                    />
+                    <i
+                      className={`fa ${passwordVisible ? 'fa-eye' : 'fa-eye-slash'} toggle-password`}
+                      onClick={togglePasswordVisibility}
+                    ></i>
+                  </div>
+                  <button type="button" onClick={handleSignup} disabled={signupLoading}>
+                    {signupLoading ? 'Signing Up...' : 'Sign Up'}
+                  </button>
+                </form>
               </div>
-              <div className="input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Enter CAPTCHA"
-                  value={userCaptcha}
-                  onChange={(e) => setUserCaptcha(e.target.value)} // Update user input
-                  required
-                />
+            )}
+
+            {/* Login Form */}
+            {!isSignup && (
+              <div className="form-control signin-form">
+                <form action="#">
+                  <h2>LOGIN</h2><br />
+                  <div className="input-wrapper">
+                    <i className="fas fa-user icon"></i>
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={data.name}
+                      onChange={handleInputChange('name')}
+                      required
+                    />
+                  </div>
+                  <div className="input-wrapper">
+                    <i className="fas fa-phone-alt icon"></i>
+                    <input
+                      type="text"
+                      placeholder="Registered number"
+                      value={data.phNo}
+                      onChange={handleInputChange('phNo')}
+                      required
+                    />
+                  </div>
+                  <div className="input-wrapper">
+                    <i className="fas fa-key icon"></i>
+                    <input
+                      type={passwordVisible ? 'text' : 'password'}
+                      placeholder="Password"
+                      value={data.password}
+                      onChange={handleInputChange('password')}
+                      required
+                    />
+                    <i
+                      className={`fa ${passwordVisible ? 'fa-eye' : 'fa-eye-slash'} toggle-password`}
+                      onClick={togglePasswordVisibility}
+                    ></i>
+                  </div>
+                  <div className="captcha-container">
+                    <div className="captcha-display">
+                      <span>{captcha}</span>
+                    </div>
+                    <div className="input-wrapper">
+                      <input
+                        type="text"
+                        placeholder="Enter CAPTCHA"
+                        value={userCaptcha}
+                        onChange={(e) => setUserCaptcha(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  {captchaError && <div className="captcha-error">Incorrect CAPTCHA, please try again.</div>}
+                  <button type="button" onClick={handleLogin} disabled={loginLoading}>
+                    {loginLoading ? 'Logging In...' : 'Log In'}
+                  </button><br></br>
+                  <a onClick={handleForgotPassword}>Forgot Password?</a>
+                </form>
               </div>
-            </div>
-            {captchaError && <div className="captcha-error">Incorrect CAPTCHA, please try again.</div>}
-            <button type="button" onClick={handleLogin}>LogIn</button>
-          </form>
-        </div>
+            )}
       </div>
 
-      {/* Intro Section */}
-      <div className="intros-container">
+     {/* Intro Section */}
+     <div className="intros-container">
         <div className="intro-control signin-intro">
           <div className="intro-control__inner">
           <h1>Welcome back to ShadowSend!</h1><br/>
@@ -182,4 +213,4 @@ const Forms = ({ onViewSwitch }) => {
   );
 };
 
-export default Forms;
+export default React.memo(Forms);

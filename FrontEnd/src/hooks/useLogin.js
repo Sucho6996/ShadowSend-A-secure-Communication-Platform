@@ -1,43 +1,56 @@
 import { useState } from "react";
 import { useUserContext } from "../Context/userContext.js";
+import Swal from "sweetalert2";
 
 const useLogin = () => {
     const [loading, setLoading] = useState(false);
-    const {setUser} = useUserContext();
+    const { setUser } = useUserContext();
 
-    const login = async (name,phNo, password) => {
-        const success = validate(phNo, password); // Client-side input validation
+    const login = async (name, phNo, password) => {
+        const success = validate(phNo, password);
         
         if (!success) return;
 
         try {
-            setLoading(true); // Set loading to true while processing the request
-            console.log("Attempting to log in:", phNo, password);
+            setLoading(true);
 
-            // Make API call to the login endpoint
             const res = await fetch("/user/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({name, phNo, password }),
+                body: JSON.stringify({ name, phNo, password }),
             });
 
-            // Parse the response
             const data = await res.json();
 
             if (res.ok) {
-                console.log("Login successful. Token:", data.message); 
-                // Handle successful login (store token in localStorage or state)
-                localStorage.setItem("authToken", data.message); 
+                localStorage.setItem("authToken", data.message);
                 setUser(data.message);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Successful',
+                    text: 'You are now logged in!',
+                    timer: 1000,  
+                    showConfirmButton: false, 
+                });
             } else {
-                console.error("Login failed:", data.message); 
-                // Handle login failure (display error message to user)
-                alert(`Login failed: ${data.message}`);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: data.message,
+                }).then(() => {
+                    window.location.reload();
+                });
             }
         } catch (e) {
-            console.error("An error occurred during login:", e.message); 
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong. Please try again later.',
+            }).then(() => {
+                window.location.reload();
+            });
         } finally {
-            setLoading(false); // Reset loading state
+            setLoading(false);
         }
     };
 
@@ -46,14 +59,24 @@ const useLogin = () => {
 
 const validate = (phNo, password) => {
     if (!phNo || !password) {
-        console.error("Phone number or password is missing.");
-        alert("Phone number or password is missing.");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Input Error',
+            text: 'Phone number or password is missing.',
+        }).then(() => {
+            window.location.reload();
+        });
         return false;
     }
 
     if (phNo < 1000000000 || phNo > 9999999999) {
-        console.error("Invalid phone number.");
-        alert("Invalid phone number.");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Input Error',
+            text: 'Invalid phone number.', 
+        }).then(() => {
+            window.location.reload();
+        });
         return false;
     }
 

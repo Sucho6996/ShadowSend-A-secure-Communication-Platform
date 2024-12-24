@@ -1,53 +1,132 @@
+
+
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 const useSignup = () => {
   const [loading, setLoading] = useState(false);
 
   const signup = async (name, phNo, password) => {
- const success = validate(name, phNo, password);
+    const success = validate(name, phNo, password);
+    if (!success) return;
 
-  if (!success) return;
-
-  try {
-    setLoading(true);
-
-    const res = await fetch("/user/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, phNo, password }),
-    });
-
-    let data;
     try {
-      data = await res.json(); // Try to parse JSON response
-    } catch (_e) {
-      data = await res.text(); // Fallback to text if JSON parsing fails
+      setLoading(true);
+      const phno = phNo.toString();
+
+      // Step 1: Send OTP
+      const sendOtpRes = await fetch(`/user/sendOtp?phNo=${phno}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      });
+      
+
+      if (sendOtpRes.ok) {
+        Swal.fire({
+          icon: "info",
+          title: "OTP Sent",
+          text: "Please check your phone for the OTP.",
+          confirmButtonText: "Verify OTP",
+        });
+
+        // Step 2: Verify OTP
+        const { value: otp } = await Swal.fire({
+          title: "Verify OTP",
+          input: "text",
+          inputLabel: "Enter the OTP sent to your phone",
+          inputPlaceholder: "Enter OTP",
+          inputValidator: (value) => {
+            if (!value) {
+              return "You need to enter the OTP!";
+            }
+          },
+          showCancelButton: true,
+          confirmButtonText: "Verify",
+        });
+
+        if (!otp) return;
+
+        const verifyRes = await fetch("/user/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phNo, otp }),
+        });
+
+        const verifyData = await verifyRes.json();
+        if (verifyRes.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "OTP Verified",
+            text: "You can now proceed with signing up.",
+            confirmButtonText: "OK",
+          });
+
+          // Step 3: Finalize Signup
+          const res = await fetch("/user/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, phNo, password }),
+          });
+
+          const signupData = await res.json();
+          if (res.ok) {
+            Swal.fire({
+              icon: "success",
+              title: "Signup Successful",
+              text: "Your account has been created successfully. Please log in.",
+              confirmButtonText: "OK",
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            throw new Error(signupData.error || "Phone number already exists.");
+          }
+        } else {
+          throw new Error(verifyData.error || "OTP verification failed.");
+        }
+      } else {
+        throw new Error((await sendOtpRes.json()).Message || "Failed to send OTP.");
+      }
+    } catch (e) {
+      console.error("Signup error:", e.message);
+      Swal.fire({
+        icon: "error",
+        title: "Signup Failed",
+        text: e.message || "An error occurred during signup.",
+      });
+    } finally {
+      setLoading(false);
     }
-
-    if (!res.ok) {
-      throw new Error(data.error || data || "Something went wrong");
-    }
-
-    console.log("Signup successful:", data);
-
-  } catch (e) {
-    console.error("Signup error:", e.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return { loading, signup };
 };
 
 const validate = (name, phNo, password) => {
   if (!name || !phNo || !password) {
-    console.error("Some inputs are missing");
+    Swal.fire({
+      icon: "warning",
+      title: "Validation Error",
+      text: "Please fill in all the required fields.",
+    });
     return false;
   }
 
-  if (phNo < 1000000000 || phNo > 9999999999) {
-    console.error("Not a valid phone number");
+  if (phNo.toString().length !== 10 || isNaN(phNo)) {
+    Swal.fire({
+      icon: "warning",
+      title: "Invalid Phone Number",
+      text: "Please enter a valid 10-digit phone number.",
+    });
+    return false;
+  }
+
+  if (password.length < 6) {
+    Swal.fire({
+      icon: "warning",
+      title: "Weak Password",
+      text: "Password must be at least 6 characters long.",
+    });
     return false;
   }
 

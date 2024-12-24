@@ -1,36 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense, useMemo } from 'react';
 import './App.css';
-import Forms from './Forms';    // Import your Forms component
-import MainFeed from './MainFeed';   // Import your MainFeed component
 import { useUserContext } from './Context/userContext';
 
+// Lazy load components
+const Forms = lazy(() => import('./Forms'));
+const MainFeed = lazy(() => import('./MainFeed'));
+
 function App() {
-  // State to track current view
-  const [currentView, setCurrentView] = useState('Forms');  // Default view is 'Forms'
+  const [currentView, setCurrentView] = useState('Forms');
+  const { user } = useUserContext();
 
-  const { user } = useUserContext(); // Access user context
+  const derivedView = useMemo(() => (user ? 'MainFeed' : 'Forms'), [user]);
 
-  // Function to change the view to Main Feed after successful Sign In/Sign Up
-  const handleViewSwitch = (view) => {
-    setCurrentView(view);
-  };
-
-  // Update the view to MainFeed when user is logged in
   useEffect(() => {
-    if (user) {
-      setCurrentView('MainFeed');
-    }
-    console.log(user)
-  }, [user]); // Only re-run when the user state changes
+    setCurrentView(derivedView);
+    console.log(user);
+  }, [derivedView]);
 
   return (
     <div className="App">
-      {/* Render Forms or MainFeed based on the currentView state */}
-      {currentView === 'Forms' && <Forms onViewSwitch={handleViewSwitch} />}
-      {currentView === 'MainFeed' && <MainFeed setCurrentView={setCurrentView} />}
+      <Suspense fallback={<div>Loading...</div>}>
+        {currentView === 'Forms' && <Forms onViewSwitch={setCurrentView} />}
+        {currentView === 'MainFeed' && <MainFeed setCurrentView={setCurrentView} />}
+      </Suspense>
     </div>
   );
 }
 
-export default App;
-
+export default React.memo(App);
