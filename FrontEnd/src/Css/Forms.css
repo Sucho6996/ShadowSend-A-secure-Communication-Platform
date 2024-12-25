@@ -48,6 +48,7 @@ body {
 
 .container .forms-container .form-control h2 {
   font-size: 2rem;
+  margin-bottom: -5%;
 }
 
 .container .forms-container .form-control form {
@@ -57,7 +58,7 @@ body {
 }
 
 .container .forms-container .form-control form input {
-  margin: 1px 0px;
+  margin: 4px 0px;
   border: none;
   padding: 15px;
   padding-left: 13%;
@@ -71,7 +72,7 @@ body {
 .container .forms-container .form-control form button {
   border: none;
   padding: 12px;
-  margin-top: 5px;
+  margin-top: -1%;
   background-color: #007BFF;
   border-radius: 5px;
   color: #fff;
@@ -116,6 +117,7 @@ body {
   left: 50%;
   width: 50%;
   text-align: center;
+  z-index: 1000;
 }
 
 .container .intros-container .intro-control {
@@ -171,6 +173,7 @@ body {
 
 .change .forms-container .form-control.signup-form button {
   background-color: #0056b3 !important;
+  margin-top: 5%;
 }
 
 .change .forms-container .form-control.signup-form button:hover {
@@ -262,18 +265,15 @@ body {
 }
 
 .toggle-password{
-  position: absolute;
-  right: 12%;
-  top: 62.5%;
-  transform: translateY(-50%);
+  margin-left: 80%;
   cursor: pointer;
   font-size: 20px;
   color: #3A3B3C;
+  z-index: 1000;  
 }
 
 #eye{
-  right: -80%;
-  top: 48.2%;
+  margin-top: 0.5%;
 }
 
 .captcha-container {
@@ -284,20 +284,32 @@ body {
 .captcha-display {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 20px;
-  margin-right: 20px;
-  height: 72%;
+  margin-bottom: 19px;
+  margin-right: 18px;
+  height: 56%;
   width: 45%;
-  padding: 10px;
+  padding: 8px 10px 28px 10px;
   background-color: #d8d8d8;
   border: 2px solid #3A3B3C;
   border-radius: 5px;
   font-family: 'Great Vibes', cursive;
+  user-select: none;
 }
 
 .captcha-error {
   color: red;
   font-size: 14px;
   margin-bottom: 5px;
+} 
+
+.signin-form a{
+  margin-left: 54%;
+  margin-top: -4%;
+  color: rgb(0, 120, 160);
+  cursor: pointer;
+  font-size: 18px;
 }
 
+.signin-form a:hover{
+  color: rgb(0, 34, 46);
+}

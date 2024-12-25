@@ -45,6 +45,9 @@ const useEncrypt = () =>{
           icon: 'success',
           title: 'Message Sent!',
           text: 'Your message has been successfully sent.',
+        }).then(() => {
+          // Reload the page after the SweetAlert success is confirmed
+          window.location.reload();
         });
       } else {
         Swal.fire({
