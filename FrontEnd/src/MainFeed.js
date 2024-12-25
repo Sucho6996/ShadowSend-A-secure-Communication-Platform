@@ -131,8 +131,8 @@ const MainFeed = ({ setCurrentView }) => {
 
   // Handle Change Password
   const handleChangePassword = () => {
-      ChangePassword();
-  };
+    ChangePassword(profilePhone);
+  };  
 
   return (
     <div className="mainfeed">
@@ -159,7 +159,7 @@ const MainFeed = ({ setCurrentView }) => {
                   <i className="material-icons user-profile-icon">account_circle</i>
                 )}
               </div>
-
+              
                 <div className="profile-info">
                   <h3>{profileName}</h3>
                   <div className='phno'><b>Phone</b><b> number: </b> <p>{profilePhone}</p></div>

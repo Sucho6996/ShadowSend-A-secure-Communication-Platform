@@ -48,7 +48,6 @@ const ForgotPassword = () => {
       const { value: otp, dismiss: otpDismiss } = await Swal.fire({
         title: 'Enter OTP',
         input: 'text',
-        inputLabel: 'OTP',
         inputPlaceholder: 'Enter the OTP',
         showCancelButton: true,
         inputValidator: (value) => {
