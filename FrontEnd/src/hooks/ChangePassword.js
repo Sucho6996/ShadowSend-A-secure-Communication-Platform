@@ -1,34 +1,14 @@
-import { useState } from "react";
 import Swal from "sweetalert2";
 
-const ChangePassword = () => {
-
+const ChangePassword = (profilePhone) => {
   const initiateChangePassword = async () => {
     try {
-      // Ask for the phone number
-      const { value: phoneNumber, dismiss } = await Swal.fire({
-        title: 'Enter your Phone Number',
-        input: 'text',
-        inputPlaceholder: 'Enter your phone number',
-        showCancelButton: true,
-        inputValidator: (value) => {
-          if (!value) {
-            return 'Phone number is required!';
-          }
-        },
-      });
-
-      if (dismiss === 'cancel') {
-        window.location.reload(); 
-        return;
-      }
-
-      if (!phoneNumber) return;
-      const phno = phoneNumber.toString();
+      const phno = profilePhone.toString();
+      
       // Send OTP to phone number
       const sendOtpRes = await fetch('/user/sendOtpSecure', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         },
@@ -50,9 +30,8 @@ const ChangePassword = () => {
 
       // Ask for OTP
       const { value: otp, dismiss: otpDismiss } = await Swal.fire({
-        title: 'Enter OTP',
+        title:'Verify Phone Number',
         input: 'text',
-        inputLabel: 'OTP',
         inputPlaceholder: 'Enter the OTP',
         showCancelButton: true,
         inputValidator: (value) => {
@@ -63,14 +42,14 @@ const ChangePassword = () => {
       });
 
       if (otpDismiss === 'cancel') {
-        window.location.reload(); // Refresh page when cancel is pressed
+        window.location.reload(); 
         return;
       }
 
       if (!otp) return;
 
       // Verify OTP
-      await verifyOtp(phoneNumber, otp);
+      await verifyOtp(phno, otp);
 
     } catch (e) {
       console.error('OTP error:', e.message);
@@ -84,12 +63,12 @@ const ChangePassword = () => {
     } 
   };
 
-  const verifyOtp = async (phoneNumber, otp) => {
+  const verifyOtp = async (phno, otp) => {
     try {
       const verifyRes = await fetch('/user/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phNo: phoneNumber, otp }),
+        body: JSON.stringify({ phNo: phno, otp }),
       });
 
       const verifyData = await verifyRes.json();
@@ -122,7 +101,7 @@ const ChangePassword = () => {
       });
 
       if (newPasswordDismiss === 'cancel') {
-        window.location.reload(); // Refresh page when cancel is pressed
+        window.location.reload(); 
         return;
       }
 
@@ -141,7 +120,7 @@ const ChangePassword = () => {
       });
 
       if (confirmPasswordDismiss === 'cancel') {
-        window.location.reload(); // Refresh page when cancel is pressed
+        window.location.reload(); 
         return;
       }
 
@@ -155,9 +134,9 @@ const ChangePassword = () => {
         });
         return;
       }
-
+      
       // Call reset password API
-      await resetPassword(phoneNumber, newPassword);
+      await resetPassword(phno, newPassword);
     } catch (e) {
       console.error('OTP verification error:', e.message);
       Swal.fire({
@@ -170,12 +149,12 @@ const ChangePassword = () => {
     } 
   };
 
-  const resetPassword = async (phoneNumber, newPassword) => {
+  const resetPassword = async (phno, newPassword) => {
     try {
       const resetPasswordRes = await fetch('/user/resetPassword', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phNo: phoneNumber, otp: newPassword }),
+        body: JSON.stringify({ phNo: phno, otp: newPassword }),
       });
 
       const resetPasswordData = await resetPasswordRes.json();
@@ -190,8 +169,9 @@ const ChangePassword = () => {
         text: 'Your password has been successfully reset.',
         confirmButtonText: 'OK',
       }).then(() => {
-        window.location.reload(); // Refresh page after successful reset
+        window.location.reload(); 
       });
+      console.log(phno);
     } catch (e) {
       console.error('Password reset error:', e.message);
       Swal.fire({
@@ -199,12 +179,11 @@ const ChangePassword = () => {
         title: 'Password Reset Failed',
         text: e.message || 'An error occurred while resetting your password.',
       }).then(() => {
-        window.location.reload(); // Refresh page after error
+        window.location.reload(); 
       });
     } 
   };
 
-  // Start the password change process
   initiateChangePassword();
 
   return null;

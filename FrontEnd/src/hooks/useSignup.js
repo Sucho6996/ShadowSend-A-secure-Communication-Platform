@@ -31,7 +31,7 @@ const useSignup = () => {
 
         // Step 2: Verify OTP
         const { value: otp } = await Swal.fire({
-          title: "Verify OTP",
+          title: "Verify Phone Number",
           input: "text",
           inputLabel: "Enter the OTP sent to your phone",
           inputPlaceholder: "Enter OTP",

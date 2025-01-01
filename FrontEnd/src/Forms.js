@@ -98,7 +98,7 @@ const Forms = ({ onViewSwitch }) => {
                   <div className="input-wrapper">
                     <i className="fas fa-phone-alt icon"></i>
                     <input
-                      type="number"
+                      type="text"
                       placeholder="Phone no."
                       value={data.phNo}
                       onChange={handleInputChange('phNo')}
