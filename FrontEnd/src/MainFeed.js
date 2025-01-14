@@ -131,7 +131,7 @@ const MainFeed = ({ setCurrentView }) => {
 
   // Handle Change Password
   const handleChangePassword = () => {
-    ChangePassword(profilePhone);
+    ChangePassword();
   };  
 
   return (
