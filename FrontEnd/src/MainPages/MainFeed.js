@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Css/MainFeed.css';
+import '../Css/MainFeed.css';
 import Swal from 'sweetalert2'; 
-import useLogout from './hooks/useLogout.js';
-import useGetSix from './hooks/useGetSix.js';
-import useEncrypt from './hooks/useEncrypt.js';
-import useDecrypt from './hooks/useDecrypt.js';
-import useProfile from './hooks/useProfile';
+import useLogout from '../Hooks/useLogout.js';
+import useGetSix from '../Hooks/useGetSix.js';
+import useEncrypt from '../Hooks/useEncrypt.js';
+import useDecrypt from '../Hooks/useDecrypt.js';
+import useProfile from '../Hooks/useProfile.js';
 import logo from './logo.webp';
-import ChangePassword from './hooks/ChangePassword'; 
+import ChangePassword from '../Hooks/ChangePassword.js'; 
 
 const MainFeed = ({ setCurrentView }) => {
   const [formVisible, setFormVisible] = useState(false);
