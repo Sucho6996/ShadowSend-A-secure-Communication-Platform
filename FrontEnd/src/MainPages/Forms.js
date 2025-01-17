@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Css/Forms.css';
-import useLogin from './hooks/useLogin.js';
-import useSignup from './hooks/useSignup.js';
-import ForgotPassword from './hooks/ForgotPassword'; 
+import '../Css/Forms.css';
+import useLogin from '../Hooks/useLogin.js';
+import useSignup from '../Hooks/useSignup.js';
+import ForgotPassword from '../Hooks/ForgotPassword.js'; 
 
 const Forms = ({ onViewSwitch }) => {
   const [isSignup, setIsSignup] = useState(false);

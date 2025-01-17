@@ -1,10 +1,10 @@
 import React, { useState, useEffect, lazy, Suspense, useMemo } from 'react';
-import './App.css';
+import './Css/App.css';
 import { useUserContext } from './Context/userContext';
 
 // Lazy load components
-const Forms = lazy(() => import('./Forms'));
-const MainFeed = lazy(() => import('./MainFeed'));
+const Forms = lazy(() => import('./MainPages/Forms'));
+const MainFeed = lazy(() => import('./MainPages/MainFeed'));
 
 function App() {
   const [currentView, setCurrentView] = useState('Forms');
