@@ -9,6 +9,7 @@
 - **🔏 Secure Steganography**: Advanced bit manipulation conceals messages across RGB channels.
 - **🖼️ Image Embedding**: Embed messages with no visible change in images.
 - **📤 Easy Extraction**: Retrieve hidden text without knowing the length, thanks to delimiter-based extraction.
+- **📱 OTP Verification**: Secure user authentication using Twilio's OTP services.
 - **🛠️ Spring Boot**: Scalable backend with Spring Boot for streamlined management.
 
 ---
@@ -21,6 +22,7 @@
 | 🌱 **Spring Boot** | Backend framework for secure communication |
 | ⚙️ **Maven**     | Project build & dependencies             |
 | 📷 **ImageIO**   | Java library for handling image formats  |
+| ✉️ **Twilio**    | OTP service for user authentication      |
 
 ---
 
