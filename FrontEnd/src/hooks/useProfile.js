@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 
 const useProfile = () => {
   const [profile, setProfile] = useState(null);

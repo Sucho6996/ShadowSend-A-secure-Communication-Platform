@@ -1,4 +1,5 @@
-import React, { useState, useEffect, lazy, Suspense, useMemo } from 'react';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './Css/App.css';
 import { useUserContext } from './Context/userContext';
 
@@ -7,23 +8,20 @@ const Forms = lazy(() => import('./MainPages/Forms'));
 const MainFeed = lazy(() => import('./MainPages/MainFeed'));
 
 function App() {
-  const [currentView, setCurrentView] = useState('Forms');
   const { user } = useUserContext();
 
-  const derivedView = useMemo(() => (user ? 'MainFeed' : 'Forms'), [user]);
-
-  useEffect(() => {
-    setCurrentView(derivedView);
-    console.log(user);
-  }, [derivedView]);
-
   return (
-    <div className="App">
-      <Suspense fallback={<div>Loading...</div>}>
-        {currentView === 'Forms' && <Forms onViewSwitch={setCurrentView} />}
-        {currentView === 'MainFeed' && <MainFeed setCurrentView={setCurrentView} />}
-      </Suspense>
-    </div>
+    <Router>
+      <div className="App">
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/" element={user ? <Navigate to="/mainfeed" /> : <Forms />} />
+            <Route path="/forms" element={<Forms />} />
+            <Route path="/mainfeed" element={user ? <MainFeed /> : <Navigate to="/forms" />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </Router>
   );
 }
 

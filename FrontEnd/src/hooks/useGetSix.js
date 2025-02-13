@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const useGetSix = () => {
   const [userViews, setUserViews] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Initialize navigation
 
   const getAuthToken = () => {
     const token = localStorage.getItem("authToken");
@@ -18,8 +20,6 @@ const useGetSix = () => {
     setLoading(true);
 
     const authToken = getAuthToken();
-    console.log(authToken);
-
     if (!authToken) {
       setError("Authorization token is missing. Please log in.");
       setLoading(false);
@@ -27,48 +27,41 @@ const useGetSix = () => {
     }
 
     try {
-      console.log("Fetching data with JWT token..."); // Debug log
-
-      const authString =`Bearer ${authToken}`;
-      console.debug(authToken);
-
-      const response = fetch("/user/findfirstsix", {
+      console.log("Fetching data with JWT token...");
+      const response = await fetch("/user/findfirstsix", {
         method: "GET",
         headers: {
-        'Authorization':authString,
-        //'Content-Type': 'text/plain',
-      },
-      }).then(response => response.json())
-        .then(data => setUserViews(data))
-      
-        .catch(error => console.error('Error:', error));
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
-        console.log("oops")
-        const errorMessage = response.status === 204
-          ? "No content found."
-          : response.status === 401
-          ? "Session expired. Please log in again."
-          : `Error: ${response.status} - ${response.statusText}`;
-        
         if (response.status === 401) {
-          //localStorage.removeItem("authToken"); // Clear token if unauthorized
-          console.log("you are unauthorized")
+          setError("Session expired. Please log in again.");
+          localStorage.removeItem("authToken"); // Clear token
+          navigate("/login"); // Redirect to login page
+          return;
         }
+
+        const errorMessage =
+          response.status === 204
+            ? "No content found."
+            : `Error: ${response.status} - ${response.statusText}`;
 
         setError(errorMessage);
         return;
       }
 
-      //const data = await response.json();
-      //setUserViews(data);
+      const data = await response.json();
+      setUserViews(data);
     } catch (err) {
       console.error("Fetch error:", err);
       setError(err.message || "An error occurred while fetching the data.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [navigate]); // Include `navigate` in dependency array
 
   return { userViews, error, loading, fetchFirstSix };
 };
