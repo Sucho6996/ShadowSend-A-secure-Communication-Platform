@@ -1,10 +1,10 @@
-
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import Swal from "sweetalert2";
 
 const useSignup = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); 
 
   const signup = async (name, phNo, password) => {
     const success = validate(name, phNo, password);
@@ -19,7 +19,6 @@ const useSignup = () => {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       });
-      
 
       if (sendOtpRes.ok) {
         Swal.fire({
@@ -36,9 +35,7 @@ const useSignup = () => {
           inputLabel: "Enter the OTP sent to your phone",
           inputPlaceholder: "Enter OTP",
           inputValidator: (value) => {
-            if (!value) {
-              return "You need to enter the OTP!";
-            }
+            if (!value) return "You need to enter the OTP!";
           },
           showCancelButton: true,
           confirmButtonText: "Verify",
@@ -76,7 +73,7 @@ const useSignup = () => {
               text: "Your account has been created successfully. Please log in.",
               confirmButtonText: "OK",
             }).then(() => {
-              window.location.reload();
+              navigate("/MainFeed"); 
             });
           } else {
             throw new Error(signupData.error || "Phone number already exists.");
@@ -102,6 +99,7 @@ const useSignup = () => {
   return { loading, signup };
 };
 
+// Validation function
 const validate = (name, phNo, password) => {
   if (!name || !phNo || !password) {
     Swal.fire({
