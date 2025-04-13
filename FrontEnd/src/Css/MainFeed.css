@@ -2,7 +2,7 @@
 body.mainfeed-body {
     margin: 0;
     padding: 0;
-    height: 100vh; 
+    height: 100vh;
     display: flex;
     flex-direction: column;
     background: linear-gradient(170deg, #007BFF, #0096FF);
@@ -18,6 +18,7 @@ body.mainfeed-body {
     position: absolute;
     left: 0;
     top: 0;
+    overflow-x: hidden;
 }
 
 .navbar {
@@ -48,11 +49,6 @@ body.mainfeed-body {
     color: white;
 }
 
-.search-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 #input1 {
     height: 30px;
@@ -60,14 +56,6 @@ body.mainfeed-body {
     border-radius: 5px;
     text-align: center;
     margin-right: 5px;
-}
-
-#searchlogo {
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 2px;
-    color: #333;
-    background-color: white;
 }
 
 .new-message-btn {
@@ -80,7 +68,9 @@ body.mainfeed-body {
     transition: background-color 0.3s ease;
 }
 
-
+.user-icon-container{
+  margin-right: 3%;
+}
 .user-logo img {
     width: 30px;
     height: 30px;
@@ -96,14 +86,14 @@ body.mainfeed-body {
     overflow: auto;
 }
 
+
 .massage-body img{
-    height: 50%;
+    height: 56%;
 }
 
 .catalog-view {
   display: flex;
   flex-wrap: wrap;
-  gap: 2.2%; 
   row-gap: 4%; 
   justify-content: flex-start;
 }
@@ -132,6 +122,8 @@ body.mainfeed-body {
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    font-size: 32px;
+    margin-bottom: 15px;
 }
 
 .encrypted-message {
@@ -213,7 +205,7 @@ body.mainfeed-body {
     transform: translate(-50%, -50%);
     z-index: 9999;
     height: auto;
-    width: 27%;
+    width: 25.3%;
     background-color: #fff;
     box-shadow: 0px 0px 20px grey;
     border-radius: 20px;
@@ -242,7 +234,7 @@ body.mainfeed-body {
     cursor: pointer;
     color: #333;
     position: absolute;
-    top: 25px;
+    top: 20px;
     right: 20px;
   }
   
@@ -346,7 +338,7 @@ body.mainfeed-body {
     color: #333;
   }
   
-  .profile-info .phno {
+  .profile-info .b, .phno {
     margin: 5px 0 0;
     font-size: 16px;
     color: #777;
@@ -354,6 +346,7 @@ body.mainfeed-body {
   }
   .profile-info .phno b, .profile-info .phno p{
     margin: 2px;
+    display: flex;
   }
 
   .logout-div{
